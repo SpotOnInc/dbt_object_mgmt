@@ -1,0 +1,11 @@
+network_policy: metaplane_whitelist
+comment: Whitelist IP for Metaplane service account
+policy_lists:
+  allowed_ip_list:
+    - 52.22.202.169
+    - 34.199.237.80
+    - 54.227.153.130
+    - 34.230.219.122
+    - 44.197.96.121
+    - 34.206.79.174
+    - 107.22.42.246
