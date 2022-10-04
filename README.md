@@ -11,16 +11,17 @@ The variable `DRY_RUN` will default to True, which will log statements without s
 
 In order to not version control / store passwords in plain text, you will also need to pass in the variable `PASSWORD` which can be passed to your end users, and changed upon their first login.
 
-Add any new users and their attributes to `./snowflake/users/users.yml` and run:
+First timers can use the script [download_snowflake_users.py](./download_snowflake_users.sql) to download any existing users and setup `./snowflake/users/users.yml` which you may add any new users and their attributes to. Once set up you can run:
 ```bash
 dbt run-operation manage_snowflake_users \
   --args "$(cat ./snowflake/users/users.yml)" \
   --vars '{PASSWORD: $3cr3t}' # add {DRY_RUN: False} to execute
 ```
+
 ___
 ### [create_whitelist](./create_whitelist.sql)
-  
-This macro helps with management of whitelists and takes a multiple file approach - it will overwrite exising with the ip addresses included in the .yml. If adding new IPs, it is also best practivce to document the associated services/ users.
+
+This macro helps with management of whitelists and takes a multiple file approach - it will overwrite exising with the ip addresses included in the .yml files. If adding new IPs, it is also best practivce to document the associated services/ users.
 
 ```bash
 dbt run-operation create_whitelist \

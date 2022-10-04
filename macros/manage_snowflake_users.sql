@@ -4,7 +4,7 @@
   )
 -%}
 
-
+{# get a list of current non-deleted snowflake users #}
 {%- call statement('user_query', fetch_result=True) -%}
     select lower(name) -- lower helps string matching
     from snowflake.account_usage.users
@@ -29,7 +29,7 @@ use role accountadmin;
 
 {%- set name = user.get('name') %}
 {%- set attributes = user.get('attributes') %}
-{%- set roles = user.get('roles') %}
+{%- set roles = user.get('roles', 'ANALYTICS') %}
 
 {#- lower helps with string matching #}
 {%- if name.lower() not in current_users %}
@@ -74,7 +74,7 @@ commit;
 
 {% if not var('DRY_RUN', True) %}
   {%- do log('Executing user statements...', info=True) -%}
-  {%- do run_query(user_sql) -%}
+  {#- do run_query(user_sql) -#}
 {% endif %}
 
 {%- endmacro -%}
