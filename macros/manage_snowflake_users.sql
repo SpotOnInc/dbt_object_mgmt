@@ -9,8 +9,8 @@ use role accountadmin;
 
 {% for user in users -%}
 
-{%- set name = user.get('name') %}
-{%- set attributes = user.get('attributes') %}
+{%- set name = user.get('name') -%}
+{%- set attributes = user.get('attributes') -%}
 {%- set roles = user.get('roles', 'ANALYTICS') %}
 
 create user
