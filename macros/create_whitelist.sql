@@ -7,10 +7,9 @@
 {%- set network_policy_sql -%}
 begin;
 
-
 create network policy if not exists
   {{ network_policy }}
-  allowed_ip_list = ('0.0.0.0')
+  allowed_ip_list = ('0.0.0.0/0')
 ;
 
 alter network policy
@@ -35,7 +34,6 @@ commit;
 
 
 {%- do log(network_policy_sql, info=True) -%}
-
 
 {% if not var('DRY_RUN', True) %}
   {%- do log("\nrunning network policy " ~ network_policy ~ "\n", info=True) -%}

@@ -5,7 +5,7 @@
 {%- set user_sql -%}
 begin name create_users; -- set single transaction to rollback if errors
 
-use role accountadmin;
+use role securityadmin;
 
 {% for user in users -%}
 
@@ -21,7 +21,7 @@ create user
 
 alter user {{ name }} set
   {% for key, value in attributes.items() -%}
-  {%- if key not in ["comment", "password", "login_name", "email"] -%}
+  {%- if key not in ["comment", "login_name", "email"] -%}
   {{ key }} = {{ value }}
   {%- else -%}
   {{ key }} = '{{ value }}'
@@ -47,6 +47,8 @@ commit;
 {% if not var('DRY_RUN', True) %}
   {% do log('Executing user statements...', info=True) %}
   {# do run_query(user_sql) #}
+{% else %}
+  {%- do log('Nothing has been executed - use DRY_RUN: False in your vars', info=True) -%}
 {% endif %}
 
 {%- endmacro -%}
