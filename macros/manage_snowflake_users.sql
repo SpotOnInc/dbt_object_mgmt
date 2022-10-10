@@ -1,10 +1,10 @@
-{%- macro manage_snowflake_users(users, dry_run=True) -%}
+{%- macro manage_snowflake_users(users) -%}
 
 {%- set _password = var('PASSWORD') %}
 
 {%- set user_sql -%}
-begin name create_users; -- set single transaction to rollback if errors
-
+-- set single transaction to rollback if errors
+begin name create_users;
 use role securityadmin;
 
 {% for user in users -%}
@@ -48,7 +48,10 @@ commit;
   {% do log('Executing user statements...', info=True) %}
   {# do run_query(user_sql) #}
 {% else %}
-  {%- do log('Nothing has been executed - use DRY_RUN: False in your vars', info=True) -%}
+  {%- do log(
+    'Nothing has been executed - use DRY_RUN: False in your vars',
+    info=True
+  ) -%}
 {% endif %}
 
 {%- endmacro -%}
