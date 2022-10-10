@@ -27,20 +27,6 @@ users:
       default_role: APPLICATIONS
     roles:
       - APPLICATIONS
-  - name: GRACE
-    attributes:
-      login_name: GRACE
-      display_name: Grace
-      first_name: Grace
-      last_name: Janes
-      email: gjanes@spoton.com
-      network_policy: COMPANY_WHITELIST
-      disabled: false
-      default_warehouse: ANALYTICS_WH
-      default_namespace: ANALYTICS
-      default_role: ANALYTICS
-    roles:
-      - ANALYTICS
   - name: METABASE
     attributes:
       login_name: METABASE
