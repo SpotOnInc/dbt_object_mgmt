@@ -3,6 +3,7 @@
 {%- set _password = var('PASSWORD') %}
 
 {%- set user_sql -%}
+
 -- set single transaction to rollback if errors
 begin name create_users;
 use role securityadmin;
@@ -11,7 +12,7 @@ use role securityadmin;
 
 {%- set name = user.get('name') -%}
 {%- set attributes = user.get('attributes') -%}
-{%- set roles = user.get('roles', 'ANALYTICS') %}
+{%- set roles = user.get('roles', ['ANALYTICS']) %}
 
 create user
   if not exists {{ name }}
@@ -28,6 +29,7 @@ alter user {{ name }} set
   {%- endif %}
   {% endfor -%}
 ;
+
 
 {% for role in roles -%}
 grant role
