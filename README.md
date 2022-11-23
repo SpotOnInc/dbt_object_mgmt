@@ -30,6 +30,17 @@ dbt run-operation create_whitelist \
 ```
 
 ___
+### [create_pipe](./create_pipe.sql)
+
+This macro helps with the (re)creation of snowpipes that takes a single file approach - it will create or replace the existing stage, table, and auto-ingesting snowpipe associated with the data in the individual .yml files. In order to run this for the first time you will need to create a [storage integration](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration.html#syntax) which is not an automated procedure at this time.
+
+```bash
+dbt run-operation create_pipe \
+  --args "$(cat ./snowflake/snowpipe/s3_pipe_jaffle_shop_orders.yml)"  \
+  # add --vars {DRY_RUN: False} to execute
+```
+
+___
 
 ### _dbt resources:
 - Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
