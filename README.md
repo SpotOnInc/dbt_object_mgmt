@@ -43,11 +43,12 @@ dbt run-operation create_pipe \
 ___
 ### [grant_schema_access](./macros/grant_schema_access.sql)
 
-This is helpful when sensitive data does not allow for granting future objects or to limit to certain environments ( i.e. not dev_ ). It is designed to be run after a `dbt run | build` command to grant access to roles in a projecct via the dbt graph object.  
+This is helpful when sensitive data does not allow for granting select on future objects or to limit to certain environments ( i.e. not dev_ ). It is designed to be run after a `dbt run | build` command to grant access to roles in a project via the dbt graph object. It defaults to granting for model and seed resource types and can be extended to and of ['model', 'snapshot', 'test', 'seed', 'operation'].
 
 ```bash
 dbt run-operation grant_schema_access \
   --args "roles: applications_read_only"
+  # only models "{roles: applications_read_only, resource_types: ['models']}
 ```
 
 ___

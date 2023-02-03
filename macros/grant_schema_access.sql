@@ -1,4 +1,4 @@
-{% macro grant_schema_access(roles) %}
+{% macro grant_schema_access(roles, resource_types=["model", "seed"]) %}
 
 {% if execute %}
 
@@ -8,7 +8,7 @@
   {% set roles = [roles] %}
 {% endif %}
 
-{% set models = graph.nodes.values() | selectattr("resource_type", "equalto", "model") | list %}
+{% set models = graph.nodes.values() | selectattr("resource_type", "in", resource_types) | list %}
 {% set schemas = [] %}
 
 {% for model in models %}
