@@ -19,7 +19,7 @@ dbt run-operation manage_snowflake_users \
 ```
 
 ___
-### [create_whitelist](./create_whitelist.sql)
+### [create_whitelist](macros/create_whitelist.sql)
 
 This macro helps with management of whitelists and takes a multiple file approach - it will overwrite exising with the ip addresses included in the .yml files. If adding new IPs, it is also best practivce to document the associated services/ users.
 
@@ -30,7 +30,7 @@ dbt run-operation create_whitelist \
 ```
 
 ___
-### [create_pipe](./create_pipe.sql)
+### [create_pipe](./macros/create_pipe.sql)
 
 This macro helps with the (re)creation of snowpipes that takes a single file approach - it will create or replace the existing stage, table, and auto-ingesting snowpipe associated with the data in the individual .yml files. In order to run this for the first time you will need to create a [storage integration](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration.html#syntax) which is not an automated procedure at this time.
 
@@ -38,6 +38,17 @@ This macro helps with the (re)creation of snowpipes that takes a single file app
 dbt run-operation create_pipe \
   --args "$(cat ./snowflake/snowpipe/s3_pipe_jaffle_shop_orders.yml)"  \
   # add --vars {DRY_RUN: False} to execute
+```
+
+___
+### [grant_schema_access](./macros/grant_schema_access.sql)
+
+This is helpful when sensitive data does not allow for granting select on future objects or to limit to certain environments ( i.e. not dev_ ). It is designed to be run after a `dbt run | build` command to grant access to roles in a project via the dbt graph object. It defaults to granting for model and seed resource types and can be extended to and of ['model', 'snapshot', 'test', 'seed', 'operation'].
+
+```bash
+dbt run-operation grant_schema_access \
+  --args "roles: applications_read_only"
+  # only models "{roles: applications_read_only, resource_types: ['models']}
 ```
 
 ___
