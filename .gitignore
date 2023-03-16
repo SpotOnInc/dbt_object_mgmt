@@ -9,3 +9,4 @@ logs/
 *.swo
 .python-version
 .DS_Store
+.vscode/*
