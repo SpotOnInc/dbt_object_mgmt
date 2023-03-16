@@ -1,0 +1,24 @@
+- network_policy: dbt_whitelist
+  comment: Whitelist IP address for dbt_ service account
+  allowed_ip_list:
+    - 52.45.144.63
+    - 54.81.134.249
+    - 52.22.161.231
+- network_policy: metaplane_whitelist
+  comment: Whitelist IP for Metaplane service account
+  allowed_ip_list:
+    - 52.22.202.169
+    - 34.199.237.80
+    - 54.227.153.130
+    - 34.230.219.122
+    - 44.197.96.121
+    - 34.206.79.174
+    - 107.22.42.246
+  blocked_ip_list:
+   # these are hooks
+    - 192.30.252.0/22
+    - 185.199.108.0/22
+    - 140.82.112.0/20
+    - 143.55.64.0/20
+    - 2a0a:a440::/29
+    - 2606:50c0::/32

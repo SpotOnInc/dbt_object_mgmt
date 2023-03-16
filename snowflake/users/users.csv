@@ -1,0 +1,26 @@
+﻿USER_NAME,_TYPE,_KEY,_VALUE
+DAN,attributes,login_name,DAN
+DAN,attributes,display_name,Dan Corley
+DAN,attributes,first_name,Dan
+DAN,attributes,last_name,Corley
+DAN,attributes,email,dcorley@spoton.com
+DAN,attributes,comment,testing user comments
+DAN,attributes,disabled,false
+DAN,attributes,default_warehouse,ANALYTICS_WH
+DAN,attributes,default_namespace,ANALYTICS
+DAN,attributes,default_role,ANALYTICS
+DAN,attributes,network_policy,DATA_ENG_WHITELIST
+DAN,roles,ACCOUNTADMIN,
+DAN,roles,ORGADMIN,
+BEN,attributes,login_name,BEN
+BEN,attributes,display_name,Ben
+BEN,attributes,first_name,Ben
+BEN,attributes,last_name,Cohen
+BEN,attributes,email,bcohen@spoton.com
+BEN,attributes,disabled,false
+BEN,attributes,default_warehouse,ANALYTICS_WH
+BEN,attributes,default_namespace,ANALYTICS
+BEN,attributes,default_role,ANALYTICS
+BEN,attributes,network_policy,DATA_ENG_WHITELIST
+BEN,roles,ACCOUNTADMIN,
+BEN,roles,ORGADMIN,
