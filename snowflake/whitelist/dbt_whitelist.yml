@@ -1,7 +1,0 @@
-network_policy: dbt_whitelist
-comment: Whitelist IP address for dbt_ service account
-policy_lists:
-  allowed_ip_list:
-    - 52.45.144.63
-    - 54.81.134.249
-    - 52.22.161.231
