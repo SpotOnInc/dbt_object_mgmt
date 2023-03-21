@@ -15,46 +15,50 @@ vars:
   snowflake_user_file: snowflake/users/users.yml
   snowflake_network_policy_file: snowflake/policy/network_policies.yml
   snowflake_admin: SECURITYADMIN
+  dry_run: true # set this to false to execute commands
 ```
-
-
-
 
 ---
 ### [create_users](./macros/create_users.sql)
 
 This macro helps with the creation and management of snowflake users. Any new users that are in the users file will be created and existing will be altered. It is non-destructive and will only disable users with the `disabled` flag.
 
-The variable `DRY_RUN` can be set to True, which will log statements without sending to snowflake for execution.
-
-In order to not version control / store passwords in plain text, you will also need to pass in the variable `PASSWORD` which can be passed to your end users, and default to force change upon their first login.
+In order to not version control / store passwords in plain text, you should also pass in the variable `password` which can be passed to your end users, and default to force change upon their first login.
 
 Use the included convenience script [download_snowflake_users.py](./download_snowflake_users.sql) to download any existing users and setup `./snowflake/users/users.yml` which you may add any new users and their attributes to.
 
 ```bash
 dbt run-operation create_users \
-  --vars "PASSWORD: $3cr3t"
-  # or --vars "{PASSWORD: $3cr3t, DRY_RUN: True}"
+  --vars "password: $3cr3t"
 ```
 
 ___
-### [create_network_policy](macros/create_network_policy.sql)
+### [create_network_policies](macros/create_network_policies.sql)
 
-This macro helps with management of whitelists - it will create or overwrite IP addresses exising with the ones provided in the corresponding files. If adding new IPs, it is also best practice to document the associated services/ users.
+This macro helps with management of IP [network policies](https://docs.snowflake.com/en/user-guide/network-policies) - it will create or alter exising IP addresses with the ones provided in the corresponding files. If adding new IPs, I would also suggest you document the associated services/ users.
 
 ```bash
-dbt run-operation create_network_policy # --vars "DRY_RUN: True"
+dbt run-operation create_network_policies
 ```
 
 ___
+### [create_integration](./macros/create_integration.sql)
+
+This macro helps with the creation and alteration of [integrations](https://docs.snowflake.com/en/sql-reference/sql/create-integration) that takes a 1:1 file to integration approach and is capable of creating api, notification, security, and/or storage integrations.
+
+```bash
+dbt run-operation create_integration \
+  --args 'file: ./snowflake/integration/s3_to_snowflake_integration.yml'
+```
+
+______
 ### [create_pipe](./macros/create_pipe.sql)
 
-This macro helps with the (re)creation of snowpipes that takes a single file approach - it will create or replace the existing stage, table, and auto-ingesting snowpipe associated with the data in the individual .yml files. In order to run this for the first time you will need to create a [storage integration](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration.html#syntax) which is not an automated procedure at this time.
+This macro helps with the (re)creation of snowpipes that takes a 1:1 file to snowpipe approach - it will create or replace the existing stage, table, and auto-ingesting snowpipe associated with the data in the individual files. In order to run this for the first time you will need to create a [storage integration](./macros/create_integration.sql).
 
 ```bash
 dbt run-operation create_pipe \
-  --args "$(cat ./snowflake/snowpipe/s3_pipe_jaffle_shop_orders.yml)"  \
-  # add --vars "DRY_RUN: False" to execute
+  --args 'file: ./snowflake/snowpipe/s3_pipe_jaffle_shop_customers.yml'
 ```
 
 ___
