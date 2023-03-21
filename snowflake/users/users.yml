@@ -17,7 +17,7 @@
 - name: DBT
   attributes:
     login_name: DBT
-    display_name: Dbt
+    display_name: dbt
     comment: puts the T in your ELT
     network_policy: DBT_WHITELIST
     default_warehouse: COMPUTE_WH

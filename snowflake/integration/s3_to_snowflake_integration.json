@@ -1,0 +1,12 @@
+{
+  "integration_name": "s3_to_snowflake_test",
+  "integration_type": "storage",
+  "enabled": true,
+  "type": "external_stage",
+  "storage_provider": "s3",
+  "storage_aws_role_arn": "'arn:aws:iam::XXXXXXXXXX:role/snowflake-role'",
+  "storage_allowed_locations": [
+    "s3://jaffle_shop/customers/",
+    "s3://jaffle_shop/orders/"
+  ]
+}
