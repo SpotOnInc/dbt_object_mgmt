@@ -1,4 +1,4 @@
-name: 'snowflake_yourself'
+name: 'dbt_object_mgmt'
 version: '0.0.2'
 config-version: 2
 
