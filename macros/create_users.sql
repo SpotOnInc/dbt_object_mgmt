@@ -1,7 +1,7 @@
 {% macro create_users() %}
 
 {% set file = var('snowflake_user_file' , 'snowflake/whitelist/network_policies.yml') %}
-{%- set _password = var('PASSWORD', 's0up3rs$cr3t') %}
+{%- set _password = var('password', 's0up3rs$cr3t') %}
 
 {% set result_list = gather_results(file) %}
 
@@ -58,7 +58,7 @@ commit;
 
 
 {% do log(user_sql, info=True) %}
-{% if not var('DRY_RUN', False) %}
+{% if not var('dry_run', False) %}
   {{ run_query(user_sql) }}
 {% endif %}
 

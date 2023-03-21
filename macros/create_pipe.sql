@@ -89,6 +89,6 @@ commit;
 {%- endset -%}
 
 {%- do log(sql, info=True) -%}
-{% if not var('DRY_RUN', True) %}
+{% if not var('dry_run', True) %}
   {%- do run_query(sql) -%}
 {%- endmacro -%}

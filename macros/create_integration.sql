@@ -49,7 +49,7 @@ commit;
 {%- endset -%}
 
 {{ log(sql, info=True) }}
-{% if not var('DRY_RUN', False) %}
+{% if not var('dry_run', False) %}
   {{ run_query(sql) }}
 {% endif %}
 
