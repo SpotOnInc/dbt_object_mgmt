@@ -35,7 +35,7 @@ dbt run-operation create_users \
 ___
 ### [create_network_policies](macros/create_network_policies.sql)
 
-This macro helps with management of IP [network policies](https://docs.snowflake.com/en/user-guide/network-policies) - it will create or alter exising IP addresses with the ones provided in the corresponding files. If adding new IPs, I would also suggest you document the associated services/ users.
+This macro helps with management of IP [network policies](https://docs.snowflake.com/en/user-guide/network-policies) - it will create or alter exising IP addresses with the ones provided in the corresponding files. If adding new IPs it is recommended that you document the associated services/ users.
 
 ```bash
 dbt run-operation create_network_policies
