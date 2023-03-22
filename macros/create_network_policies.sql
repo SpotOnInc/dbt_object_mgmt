@@ -28,11 +28,11 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
 
   alter network policy
     {{ policy_name }} set
-    {% for _key, _value in policy.items() -%}
+    {% for key, value in policy.items() -%}
     {%- if _value is not string %}
-      {{- _key }} = ({{ "\'" + _value | join("\', \'") + "\'" }})
+      {{- key }} = ({{ "\'" + value | join("\', \'") + "\'" }})
     {%- else %}
-      {{- _key }} = '{{ _value }}'
+      {{- key }} = '{{ value }}'
     {%- endif %}
     {% endfor %}
   ;
@@ -42,7 +42,7 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
 commit;
 {% endset %}
 
-{{ log(sql, info=True) }}
+{{ log(network_policy_sql, info=True) }}
 {% if not var('dry_run', False) %}
   {{ run_query(network_policy_sql) }}
 {% endif %}
