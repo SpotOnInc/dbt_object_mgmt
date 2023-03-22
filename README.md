@@ -1,43 +1,64 @@
-This sample dbt repo is setup to house examples of snowflake object management with _dbt.
-It contains the following macros, with example data in the [./snowflake](./snowflake/) folder.
+This dbt repo is setup to house macros of snowflake object management with dbt.
+Macros use a combination of snowflake put operations and stages to use local file data to create objects, with file paths set as environment variables. It contains the following macros, with example data formats in the [./snowflake](./snowflake/) folder.
 
+These macros can be installed in a current dbt project with a few lines of setup in your project files:
+```yml
+# packages.yml
+packages:
+  - git: https://github.com/SpotOnInc/dbt_object_mgmt.git
+    revision: main
+```
+```yml
+# dbt_project.yml - these are default example paths
+#                   set these to your actuals
+vars:
+  snowflake_user_file: snowflake/users/users.yml
+  snowflake_network_policy_file: snowflake/policy/network_policies.yml
+  snowflake_admin: SECURITYADMIN
+  dry_run: true # set this to false to execute commands
+```
 
+---
+### [create_users](./macros/create_users.sql)
 
-### [manage_snowflake_users](./macros/manage_snowflake_users.sql)
+This macro helps with the creation and management of snowflake users. Any new users that are in the users file will be created and existing will be altered. It is non-destructive and will only disable users with the `disabled` flag.
 
-This macro helps with the creation and management of snowflake users. Any new users that are in the users file will be created and existing will be updated. It is non-destructive and will only disable users with the `disabled` flag.
+In order to not version control / store passwords in plain text, you should also pass in the variable `password` which can be passed to your end users, and default to force change upon their first login.
 
-The variable `DRY_RUN` will default to True, which will log statements without sending to snowflake for execution.
+Use the included convenience script [download_snowflake_users.py](./download_snowflake_users.sql) to download any existing users and setup `./snowflake/users/users.yml` which you may add any new users and their attributes to.
 
-In order to not version control / store passwords in plain text, you will also need to pass in the variable `PASSWORD` which can be passed to your end users, and changed upon their first login.
-
-First timers can use the script [download_snowflake_users.py](./download_snowflake_users.sql) to download any existing users and setup `./snowflake/users/users.yml` which you may add any new users and their attributes to. Once set up you can run:
 ```bash
-dbt run-operation manage_snowflake_users \
-  --args "$(cat ./snowflake/users/users.yml)" \
-  --vars '{PASSWORD: $3cr3t}' # add {DRY_RUN: False} to execute
+dbt run-operation create_users \
+  --vars "password: $3cr3t"
 ```
 
 ___
-### [create_whitelist](macros/create_whitelist.sql)
+### [create_network_policies](macros/create_network_policies.sql)
 
-This macro helps with management of whitelists and takes a multiple file approach - it will overwrite exising with the ip addresses included in the .yml files. If adding new IPs, it is also best practivce to document the associated services/ users.
+This macro helps with management of IP [network policies](https://docs.snowflake.com/en/user-guide/network-policies) - it will create or alter exising IP addresses with the ones provided in the corresponding files. If adding new IPs it is recommended that you document the associated services/ users.
 
 ```bash
-dbt run-operation create_whitelist \
-  --args "$(cat ./snowflake/whitelist/{file_name}.yml)" \
-  # add --vars {DRY_RUN: False} to execute
+dbt run-operation create_network_policies
 ```
 
 ___
+### [create_integration](./macros/create_integration.sql)
+
+This macro helps with the creation and alteration of [integrations](https://docs.snowflake.com/en/sql-reference/sql/create-integration) that takes a 1:1 file to integration approach and is capable of creating api, notification, security, and/or storage integrations.
+
+```bash
+dbt run-operation create_integration \
+  --args 'file: ./snowflake/integration/s3_to_snowflake_integration.yml'
+```
+
+______
 ### [create_pipe](./macros/create_pipe.sql)
 
-This macro helps with the (re)creation of snowpipes that takes a single file approach - it will create or replace the existing stage, table, and auto-ingesting snowpipe associated with the data in the individual .yml files. In order to run this for the first time you will need to create a [storage integration](https://docs.snowflake.com/en/sql-reference/sql/create-storage-integration.html#syntax) which is not an automated procedure at this time.
+This macro helps with the (re)creation of snowpipes that takes a 1:1 file to snowpipe approach - it will create or replace the existing stage, table, and auto-ingesting snowpipe associated with the data in the individual files. In order to run this for the first time you will need to create a [storage integration](./macros/create_integration.sql).
 
 ```bash
 dbt run-operation create_pipe \
-  --args "$(cat ./snowflake/snowpipe/s3_pipe_jaffle_shop_orders.yml)"  \
-  # add --vars {DRY_RUN: False} to execute
+  --args 'file: ./snowflake/snowpipe/s3_pipe_jaffle_shop_customers.yml'
 ```
 
 ___
@@ -50,12 +71,3 @@ dbt run-operation grant_schema_access \
   --args "roles: applications_read_only"
   # only models "{roles: applications_read_only, resource_types: ['models']}
 ```
-
-___
-
-### _dbt resources:
-- Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
-- Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers
-- Join the [chat](https://community.getdbt.com/) on Slack for live discussions and support
-- Find [dbt events](https://events.getdbt.com) near you
-- Check out [the blog](https://blog.getdbt.com/) for the latest news on dbt's development and best practices

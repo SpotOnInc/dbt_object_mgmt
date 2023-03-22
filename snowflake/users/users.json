@@ -1,0 +1,69 @@
+[
+  {
+    "name": "DANIEL",
+    "attributes": {
+      "login_name": "DAN",
+      "display_name": "Dan Corley",
+      "first_name": "Dan",
+      "last_name": "Corley",
+      "email": "dcorley@spoton.com",
+      "comment": "snowflake admin",
+      "disabled": false,
+      "network_policy": "COMPANY_WHITELIST",
+      "default_warehouse": "ANALYTICS_WH",
+      "default_namespace": "ANALYTICS",
+      "default_role": "ANALYTICS"
+    },
+    "roles": [
+      "ACCOUNTADMIN",
+      "ANALYTICS"
+    ]
+  },
+  {
+    "name": "DBT",
+    "attributes": {
+      "login_name": "DBT",
+      "display_name": "Dbt",
+      "comment": "puts the T in your ELT",
+      "network_policy": "DBT_WHITELIST",
+      "default_warehouse": "COMPUTE_WH",
+      "default_namespace": "ANALYTICS",
+      "default_role": "APPLICATIONS"
+    },
+    "roles": [
+      "APPLICATIONS"
+    ]
+  },
+  {
+    "name": "METABASE",
+    "attributes": {
+      "login_name": "METABASE",
+      "display_name": "Metabase",
+      "comment": "fantastic open source bi platform",
+      "network_policy": "COMPANY_WHITELIST",
+      "disabled": false,
+      "default_warehouse": "METABASE_WH",
+      "default_namespace": "ANALYTICS",
+      "default_role": "BI_TOOLS"
+    },
+    "roles": [
+      "BI_TOOLS"
+    ]
+  },
+  {
+    "name": "METAPLANE",
+    "attributes": {
+      "login_name": "METAPLANE",
+      "display_name": "Metaplane",
+      "comment": "everybody's favorite data observability tool",
+      "network_policy": "METAPLANE_WHITELIST",
+      "disabled": false,
+      "default_warehouse": "COMPUTE_WH",
+      "default_namespace": "ANALYTICS",
+      "default_role": "APPLICATIONS_READ_ONLY"
+    },
+    "roles": [
+      "APPLICATIONS_READ_ONLY"
+    ]
+  }
+]

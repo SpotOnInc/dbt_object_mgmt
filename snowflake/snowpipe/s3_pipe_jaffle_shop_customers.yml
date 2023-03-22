@@ -1,8 +1,6 @@
 integration_name: jaffle_shop_integration
 schema_name: raw_jaffle_shop
-table_name: customers
-pipe_name: jaffle_shop_customers_pipe
-stage_name: jaffle_shop_customers_stage
+table_name: jaffle_shop_customers
 s3_url: 's3://jaffle_shop/customers/'
 file_type: 'CSV'
 columns:

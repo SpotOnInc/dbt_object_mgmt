@@ -1,7 +1,0 @@
-network_policy: fivetran_whitelist
-comment: Whitelist IP address for Fivetran service account
-policy_lists:
-  allowed_ip_list:
-    - 35.227.135.0/29
-    - 35.234.176.144/29
-    - 52.0.2.4/32
