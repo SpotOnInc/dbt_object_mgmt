@@ -2,6 +2,7 @@
 
 {% set file = var('snowflake_user_file' , 'snowflake/whitelist/network_policies.yml') %}
 {%- set _password = var('password', 's0up3rs$cr3t') %}
+{% set must_quote_columns = ['email', 'comment', 'rsa_public_key'] %}
 
 {% set result_list = gather_results(file) %}
 
@@ -34,9 +35,10 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
 
   alter user {{ user_name }} set
     {% for key, value in attributes.items() -%}
-    {# space handling #}
-    {%- if ' ' in value|string -%}
+    {%- if key in must_quote_columns -%}
     {{ key }} = {{ "'" ~ value ~ "'" }}
+    {%- elif key.split('_')[0] == 'default' -%}
+    {{ key }} = {{ value.upper() }}
     {%- else -%}
     {{ key }} = {{ value }}
     {%- endif %}
@@ -45,7 +47,7 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
 
   {% for role in roles -%}
   grant role
-    {{ role }} to
+    {{ role.upper() }} to
     user {{ user_name }}
   ;
   {% endfor -%}

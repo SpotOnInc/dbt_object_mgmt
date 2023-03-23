@@ -21,11 +21,7 @@
 {% set attributes %}
   {%- for key, value in integration.items() %}
     {%- if value is iterable and value is not string %}
-      {{ key }} = (
-        {%- for loc in value %}
-        {{ loc }}{% if not loop.last %},{% endif %}
-        {%- endfor %}
-      )
+      {{ key }} = ({{ "\'" + value | join("\', \'") + "\'" }})
     {%- else %}
       {{ key }} = {{ value }}
     {%- endif %}
