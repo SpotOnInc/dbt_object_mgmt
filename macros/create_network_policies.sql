@@ -29,7 +29,7 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
   alter network policy
     {{ policy_name }} set
     {% for key, value in policy.items() -%}
-    {%- if _value is not string %}
+    {%- if value is not string %}
       {{- key }} = ({{ "\'" + value | join("\', \'") + "\'" }})
     {%- else %}
       {{- key }} = '{{ value }}'
