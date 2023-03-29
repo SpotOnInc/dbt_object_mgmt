@@ -37,7 +37,7 @@ create {{ integration_type }} integration if not exists {{ integration_name }}
 {{- attributes }}
 ;
 
-alter storage integration {{ integration_name }} set
+alter {{ integration_type }} integration {{ integration_name }} set
 {{- attributes }}
 ;
 
