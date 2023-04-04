@@ -35,7 +35,7 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
 
   alter user {{ user_name }} set
     {% for key, value in attributes.items() -%}
-    {%- if key in must_quote_columns -%}
+    {%- if key in must_quote_columns or ' ' in value|string -%}
     {{ key }} = {{ "'" ~ value ~ "'" }}
     {%- elif key.split('_')[0] == 'default' -%}
     {{ key }} = {{ value.upper() }}
