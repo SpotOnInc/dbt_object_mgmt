@@ -25,7 +25,7 @@
       {%- if file_type == 'JSON' %}
       parse_json($1)
       {%- else %}
-      {%- for col in columns %}
+      {%- for col in pipe.columns %}
       {{ ', ' if not loop.first }}${{ loop.index }}
       {%- endfor %}
       {%- endif %}
@@ -38,7 +38,7 @@
       @{{ schema_name }}.{{ table_name }}_stage
   )
   on_error = continue
-  {{- "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
+  {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
   file_format = (
     type = {{ file_type }}
     {%- if file_type == 'CSV' %}
