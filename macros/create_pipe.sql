@@ -40,13 +40,18 @@
   on_error = continue
   {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
   file_format = (
-    type = {{ file_type }}
+    type = '{{ file_type }}'
     {%- if file_type == 'CSV' %}
     skip_header = 1
     field_optionally_enclosed_by = '"'
     null_if = ('', 'null')
     {% endif -%}
     )
+{% endset %}
+
+{% set copy_statement %}
+copy into {{ schema_name }}.{{ table_name }} from
+{{- copy_attributes }}
 {% endset %}
 
 
@@ -75,14 +80,13 @@ create or replace table {{ schema_name }}.{{ table_name }} (
   )
 ;
 
--- Load historic data
-copy into {{ schema_name }}.{{ table_name }}
-{{- copy_attributes }}
+-- First load historic data
+{{ copy_statement }}
 ;
 
 -- Create pipe
 create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = true as
-{{- copy_attributes }}
+{{ copy_statement }}
 ;
 
 commit;
