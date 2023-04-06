@@ -19,8 +19,8 @@
 {%- set schema_name = target.database ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
-{% set copy_attributes %}
-  from (
+{% set copy_statement -%}
+copy into {{ schema_name }}.{{ table_name }} from (
     select
       {%- if file_type == 'JSON' %}
       parse_json($1)
@@ -47,11 +47,6 @@
     null_if = ('', 'null')
     {% endif -%}
     )
-{% endset %}
-
-{% set copy_statement %}
-copy into {{ schema_name }}.{{ table_name }} from
-{{- copy_attributes }}
 {% endset %}
 
 
