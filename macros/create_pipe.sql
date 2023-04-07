@@ -42,7 +42,7 @@ copy into {{ schema_name }}.{{ table_name }} from (
   file_format = (
     type = '{{ file_type }}'
     {%- if file_type == 'CSV' %}
-    skip_header = 1
+    skip_header = {{ pipe.get('header_lines', 1) }}
     field_optionally_enclosed_by = '"'
     null_if = ('', 'null')
     {% endif -%}
