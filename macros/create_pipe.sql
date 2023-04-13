@@ -82,6 +82,7 @@ copy into {{ schema_name }}.{{ table_name }}
 
 -- Create pipe
 create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = true as
+copy into {{ database }}.{{ schema_name }}.{{ table_name }}
 {{- copy_attributes }}
 ;
 
