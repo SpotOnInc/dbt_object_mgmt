@@ -19,13 +19,13 @@
 {%- set schema_name = target.database ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
-{% set copy_attributes %}
-  from (
+{% set copy_statement -%}
+copy into {{ schema_name }}.{{ table_name }} from (
     select
       {%- if file_type == 'JSON' %}
       parse_json($1)
       {%- else %}
-      {%- for col in columns %}
+      {%- for col in pipe.columns %}
       {{ ', ' if not loop.first }}${{ loop.index }}
       {%- endfor %}
       {%- endif %}
@@ -38,11 +38,11 @@
       @{{ schema_name }}.{{ table_name }}_stage
   )
   on_error = continue
-  {{- "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
+  {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
   file_format = (
-    type = {{ file_type }}
+    type = '{{ file_type }}'
     {%- if file_type == 'CSV' %}
-    skip_header = 1
+    skip_header = {{ pipe.get('header_lines', 1) }}
     field_optionally_enclosed_by = '"'
     null_if = ('', 'null')
     {% endif -%}
@@ -75,15 +75,13 @@ create or replace table {{ schema_name }}.{{ table_name }} (
   )
 ;
 
--- Load historic data
-copy into {{ schema_name }}.{{ table_name }}
-{{- copy_attributes }}
+-- First load historic data
+{{ copy_statement }}
 ;
 
 -- Create pipe
 create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = true as
-copy into {{ database }}.{{ schema_name }}.{{ table_name }}
-{{- copy_attributes }}
+{{ copy_statement }}
 ;
 
 commit;
