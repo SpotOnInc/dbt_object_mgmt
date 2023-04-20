@@ -2,7 +2,7 @@
 
 {% set file = var('snowflake_user_file' , 'snowflake/whitelist/network_policies.yml') %}
 {%- set _password = var('password', 's0up3rs$cr3t') %}
-{% set must_quote_columns = ['email', 'comment', 'rsa_public_key'] %}
+{% set must_quote_columns = ['email', 'comment', 'rsa_public_key', 'display_name', 'first_name', 'last_name', 'middle_name'] %}
 
 {% set result_list = gather_results(file) %}
 
