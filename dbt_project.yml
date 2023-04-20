@@ -1,5 +1,5 @@
 name: 'dbt_object_mgmt'
-version: '0.2.3'
+version: '0.2.4'
 config-version: 2
 
 target-path: "target"
