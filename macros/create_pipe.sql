@@ -19,6 +19,20 @@
 {%- set schema_name = target.database ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
+
+{# set some defaults #}
+{%- set format_type_options = {
+    'skip_header': 1,
+    'null_if': ('', 'null'),
+  }
+  if file_type == 'CSV'
+  else {}
+%}
+
+{% if pipe.extra_format_options %}
+  {{ format_type_options.update(pipe.extra_format_options) }}
+{% endif %}
+
 {% set copy_statement -%}
 copy into {{ schema_name }}.{{ table_name }} from (
     select
@@ -41,11 +55,9 @@ copy into {{ schema_name }}.{{ table_name }} from (
   {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
   file_format = (
     type = '{{ file_type }}'
-    {%- if file_type == 'CSV' %}
-    skip_header = {{ pipe.get('header_lines', 1) }}
-    field_optionally_enclosed_by = '"'
-    null_if = ('', 'null')
-    {% endif -%}
+    {% for key, value in format_type_options.items() %}
+      {{- key }} = {{ value }}
+    {% endfor -%}
     )
 {% endset %}
 
