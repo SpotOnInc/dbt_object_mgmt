@@ -7,15 +7,7 @@
   ) }}
 {% endif %}
 
-{% set results = gather_results(file) %}
-
-{# must parse here - dbt returns strings through functions :( #}
-{% if get_file_type(file) == 'json' %}
-  {% set pipe = fromjson(results) %}
-{% else %}
-  {% set pipe = fromyaml(results) %}
-{% endif %}
-
+{% set pipe = gather_results(file) %}
 {%- set schema_name = target.database ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
