@@ -1,18 +1,10 @@
 {% macro create_users() %}
 
-{% set file = var('snowflake_user_file' , 'snowflake/whitelist/network_policies.yml') %}
+{% set file = var('snowflake_user_file' , 'snowflake/users/users.yml') %}
 {%- set _password = var('password', 's0up3rs$cr3t') %}
 {% set must_quote_columns = ['email', 'comment', 'rsa_public_key', 'display_name', 'first_name', 'last_name', 'middle_name'] %}
 
-{% set result_list = gather_results(file) %}
-
-{# must parse here - dbt returns strings through functions :( #}
-{% if get_file_type(file) == 'json' %}
-  {% set user_list = fromjson(result_list) %}
-{% else %}
-  {% set user_list = fromyaml(result_list) %}
-{% endif %}
-
+{% set user_list = gather_results(file) %}
 
 
 {%- set user_sql -%}

@@ -2,14 +2,7 @@
 
 {% set file = var('snowflake_network_policy_file' , 'snowflake/whitelist/network_policies.yml') %}
 
-{% set result_list = gather_results(file) %}
-
-{# must parse here - dbt returns strings through functions :( #}
-{% if get_file_type(file) == 'json' %}
-  {% set policy_list = fromjson(result_list) %}
-{% else %}
-  {% set policy_list = fromyaml(result_list) %}
-{% endif %}
+{% set policy_list = gather_results(file) %}
 
 
 {% set network_policy_sql %}

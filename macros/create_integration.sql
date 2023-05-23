@@ -7,14 +7,7 @@
   ) }}
 {% endif %}
 
-{% set results = gather_results(file) %}
-
-{# must parse here - dbt returns strings through functions :( #}
-{% if get_file_type(file) == 'json' %}
-  {% set integration = fromjson(results) %}
-{% else %}
-  {% set integration = fromyaml(results) %}
-{% endif %}
+{% set integration = gather_results(file) %}
 
 {% set integration_name = integration.pop('integration_name') %}
 {% set integration_type = integration.pop('integration_type') %}

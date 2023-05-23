@@ -73,6 +73,10 @@
 
   {{ run_query(format_sql) }}
 
+  {% set file_parser = fromjson if file_type == 'json' else fromyaml %}
+
+  {{ return(file_parser) }}
+
 {% endmacro %}
 
 
@@ -80,7 +84,7 @@
 
   {{ put_file(file) }}
 
-  {{ create_file_format(file) }}
+  {% set file_parser = create_file_format(file) %}
 
   {% set data_sql %}
     select
@@ -91,7 +95,7 @@
     ;
   {% endset %}
 
-  {% set results = run_query(data_sql)[0][0] %}
+  {% set results = file_parser(run_query(data_sql)[0][0]) %}
 
   {{ return(results) }}
 {% endmacro %}
