@@ -11,8 +11,18 @@
 
 {% set integration_name = integration.pop('integration_name') %}
 {% set integration_type = integration.pop('integration_type') %}
-{% set attributes %}
+{% set create_attributes %}
   {%- for key, value in integration.items() %}
+    {%- if value is iterable and value is not string %}
+      {{ key }} = ({{ "\'" + value | join("\', \'") + "\'" }})
+    {%- else %}
+      {{ key }} = {{ value }}
+    {%- endif %}
+  {%- endfor %}
+{% endset %}
+
+{% set alter_attributes %}
+  {%- for key, value in integration.items() if key not in ['type', 'storage_provider'] %}
     {%- if value is iterable and value is not string %}
       {{ key }} = ({{ "\'" + value | join("\', \'") + "\'" }})
     {%- else %}
@@ -27,11 +37,11 @@ begin name create_integration;
 
 {# don't want to delete if already exists :) #}
 create {{ integration_type }} integration if not exists {{ integration_name }}
-{{- attributes }}
+{{- create_attributes }}
 ;
 
 alter {{ integration_type }} integration {{ integration_name }} set
-{{- attributes }}
+{{- alter_attributes }}
 ;
 
 commit;
