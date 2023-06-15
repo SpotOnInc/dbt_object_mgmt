@@ -35,9 +35,6 @@ use role {{ var('snowflake_admin', 'securityadmin') }};
 commit;
 {% endset %}
 
-{{ log(network_policy_sql, info=True) }}
-{% if not var('dry_run', False) %}
-  {{ run_query(network_policy_sql) }}
-{% endif %}
+{{ run_it(network_policy_sql) }}
 
 {% endmacro %}

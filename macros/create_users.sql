@@ -51,9 +51,6 @@ commit;
 {%- endset %}
 
 
-{% do log(user_sql, info=True) %}
-{% if not var('dry_run', False) %}
-  {{ run_query(user_sql) }}
-{% endif %}
+{{ run_it(sql) }}
 
 {% endmacro %}

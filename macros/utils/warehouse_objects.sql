@@ -99,3 +99,14 @@
 
   {{ return(results) }}
 {% endmacro %}
+
+
+{% macro run_it(sql, message='') %}
+
+{%- do log(sql, info=True) -%}
+{% if not var('dry_run', False) %}
+  {%- do run_query(sql) -%}
+  {{ log(message, info=True) }}
+{% endif %}
+
+{% endmacro %}

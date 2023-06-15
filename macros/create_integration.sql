@@ -47,9 +47,6 @@ alter {{ integration_type }} integration {{ integration_name }} set
 commit;
 {%- endset -%}
 
-{{ log(sql, info=True) }}
-{% if not var('dry_run', False) %}
-  {{ run_query(sql) }}
-{% endif %}
+{{ run_it(sql) }}
 
 {%- endmacro -%}

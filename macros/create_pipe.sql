@@ -91,8 +91,7 @@ create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = tru
 commit;
 {%- endset -%}
 
-{%- do log(sql, info=True) -%}
-{% if not var('dry_run', False) %}
-  {%- do run_query(sql) -%}
-{% endif %}
+{% set message = schema_name~'.'~table_name~'_pipe created!' %}
+{{ run_it(sql, message) }}
+
 {%- endmacro -%}
