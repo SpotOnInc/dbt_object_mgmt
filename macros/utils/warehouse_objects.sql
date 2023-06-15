@@ -101,6 +101,24 @@
 {% endmacro %}
 
 
+{% macro set_type_options(extra_format_options) %}
+  {# set some defaults for CSV extras #}
+  options = {
+    'skip_header': 1,
+    'null_if': ('', 'null'),
+  }
+  if file_type == 'CSV'
+  else {}
+
+  {% if extra_format_options %}
+    {{ options.update(extra_format_options) }}
+  {% endif %}
+
+  {{ return(options) }}
+
+{% endmacro %}
+
+
 {% macro run_it(sql, message='') %}
 
 {%- do log(sql, info=True) -%}

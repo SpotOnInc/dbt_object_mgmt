@@ -12,18 +12,10 @@
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
 
-{# set some defaults #}
-{%- set format_type_options = {
-    'skip_header': 1,
-    'null_if': ('', 'null'),
-  }
-  if file_type == 'CSV'
-  else {}
+{%- set format_type_options = set_type_options(
+    pipe.extra_format_options or {}
+  )
 %}
-
-{% if pipe.extra_format_options %}
-  {{ format_type_options.update(pipe.extra_format_options) }}
-{% endif %}
 
 {% set copy_statement -%}
 copy into {{ schema_name }}.{{ table_name }} from (
