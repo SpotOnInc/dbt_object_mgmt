@@ -22,7 +22,6 @@
   else {}
 %}
 
-
 {% if pipe.extra_format_options %}
   {{ format_type_options.update(pipe.extra_format_options) }}
 {% endif %}
@@ -60,8 +59,6 @@ copy into {{ schema_name }}.{{ table_name }} from (
     )
 {% endset %}
 
-
-
 {%- set sql -%}
 begin name create_pipe;
 
@@ -88,7 +85,7 @@ create or replace table {{ schema_name }}.{{ table_name }} (
 ;
 
 -- First load historic data
-  {{ copy_statement }}
+{{ copy_statement }}
 ;
 
 -- Create pipe
