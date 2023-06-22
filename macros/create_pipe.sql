@@ -13,22 +13,14 @@
 {%- set file_type = pipe.file_type %}
 
 {# set some defaults #}
-{% if not pipe.match_by_column_name and not pipe.parse_headers %}
-  {%- set format_type_options = {
-      'skip_header': 1,
-      'null_if': ('', 'null'),
-    }
-    if file_type == 'CSV'
-    else {}
-  %}
-  {%- else %}
-  {%- set format_type_options = {
-      'null_if': ('', 'null'),
-    }
-    if file_type == 'CSV'
-    else {}
-  %}
-{%- endif %}
+{%- set format_type_options = {
+    'skip_header': 1,
+    'null_if': ('', 'null'),
+    'error_on_column_count_mismatch': true
+  }
+  if file_type == 'CSV'
+  else {}
+%}
 
 
 {% if pipe.extra_format_options %}
@@ -36,6 +28,10 @@
 {% endif %}
 
 {% set copy_statement -%}
+{% if pipe.match_by_column_name %}
+copy into {{ schema_name }}.{{ table_name }}
+from @{{ schema_name }}.{{ table_name }}_stage
+{% else %}
 copy into {{ schema_name }}.{{ table_name }} from (
     select
       {%- if file_type == 'JSON' %}
@@ -53,6 +49,7 @@ copy into {{ schema_name }}.{{ table_name }} from (
     from
       @{{ schema_name }}.{{ table_name }}_stage
   )
+  {% endif %}
   on_error = continue
   {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
   file_format = (
@@ -63,19 +60,6 @@ copy into {{ schema_name }}.{{ table_name }} from (
     )
 {% endset %}
 
-{% set aws_ingest_copy_statement %}
-  copy into {{ schema_name }}.{{ table_name }}
-  from @{{ schema_name }}.{{ table_name }}_stage
-  file_format = (
-    type = '{{ file_type }}'
-    {% for key, value in format_type_options.items() %}
-      {{- key }} = {{ value }}
-    {% endfor -%}
-    )
-  {{ "match_by_column_name = '" ~ pipe.match_by_column_name ~ "'" if pipe.match_by_column_name }}
-  {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
-  on_error = continue
-{% endset %}
 
 
 {%- set sql -%}
@@ -104,20 +88,12 @@ create or replace table {{ schema_name }}.{{ table_name }} (
 ;
 
 -- First load historic data
-{% if not pipe.match_by_column_name and not pipe.parse_headers %}
   {{ copy_statement }}
- {%- else %}
-  {{ aws_ingest_copy_statement }}
-{%- endif %}
 ;
 
 -- Create pipe
 create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = true as
-{% if not pipe.match_by_column_name and not pipe.parse_headers %}
-  {{ copy_statement }}
- {%- else %}
-  {{ aws_ingest_copy_statement }}
-{%- endif %}
+{{ copy_statement }}
 ;
 
 commit;
