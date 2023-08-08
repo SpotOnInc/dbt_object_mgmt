@@ -8,7 +8,8 @@
 {% endif %}
 
 {% set pipe = gather_results(file) %}
-{%- set schema_name = target.database ~ '.' ~ pipe.schema_name %}
+{%- set database_name = pipe.database_name or target.database %}
+{%- set schema_name = database_name ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
 
@@ -67,7 +68,7 @@ create or replace stage {{ schema_name }}.{{ table_name }}_stage
 ;
 
 -- Create table
-create or replace table {{ schema_name }}.{{ table_name }} (
+create table if not exists {{ schema_name }}.{{ table_name }} (
   {%- for col, type in pipe.columns.items() %}
   {{ ', ' if not loop.first }}{{ col }} {{ type }}
   {%- endfor %}
