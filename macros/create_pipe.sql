@@ -68,7 +68,7 @@ create or replace stage {{ schema_name }}.{{ table_name }}_stage
 ;
 
 -- Create table
-create table if not exists {{ schema_name }}.{{ table_name }} (
+create or replace table {{ schema_name }}.{{ table_name }} (
   {%- for col, type in pipe.columns.items() %}
   {{ ', ' if not loop.first }}{{ col }} {{ type }}
   {%- endfor %}
