@@ -16,6 +16,7 @@
 {%- set format_type_options = {
     'skip_header': 1,
     'null_if': ('', 'null'),
+    'error_on_column_count_mismatch': true
   }
   if file_type == 'CSV'
   else {}
@@ -26,6 +27,10 @@
 {% endif %}
 
 {% set copy_statement -%}
+{% if pipe.match_by_column_name %}
+copy into {{ schema_name }}.{{ table_name }}
+from @{{ schema_name }}.{{ table_name }}_stage
+{% else %}
 copy into {{ schema_name }}.{{ table_name }} from (
     select
       {%- if file_type == 'JSON' %}
@@ -43,6 +48,7 @@ copy into {{ schema_name }}.{{ table_name }} from (
     from
       @{{ schema_name }}.{{ table_name }}_stage
   )
+  {% endif %}
   on_error = continue
   {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
   file_format = (
@@ -52,7 +58,6 @@ copy into {{ schema_name }}.{{ table_name }} from (
     {% endfor -%}
     )
 {% endset %}
-
 
 {%- set sql -%}
 begin name create_pipe;
