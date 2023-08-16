@@ -8,7 +8,8 @@
 {% endif %}
 
 {% set pipe = gather_results(file) %}
-{%- set schema_name = target.database ~ '.' ~ pipe.schema_name %}
+{%- set database_name = pipe.database_name or target.database %}
+{%- set schema_name = database_name ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
 
