@@ -17,7 +17,8 @@
 {%- set format_type_options = {
     'skip_header': 1,
     'null_if': ('', 'null'),
-    'error_on_column_count_mismatch': true
+    'error_on_column_count_mismatch': true,
+    'field_optionally_enclosed_by': '"',
   }
   if file_type == 'CSV'
   else {}
