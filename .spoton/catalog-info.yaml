@@ -1,0 +1,33 @@
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-component
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: dbt_object_mgmt
+  description: | 
+    Macros of snowflake object management with dbt
+  
+  annotations:
+    github.com/project-slug: spotoninc/dbt_object_mgmt
+  
+    backstage.io/techdocs-ref: dir:..
+  
+  tags:
+    - dbt # language
+    - python # language
+    - sql # language
+  links:
+    
+    - title: "JIRA board"
+      type: project-management
+      url: https://spotonteam.atlassian.net/jira/software/c/projects/ANA/boards/53
+      icon: help
+      
+    - title: "Slack (#data-services)"
+      type: contact
+      url: https://spoton.slack.com/archives/CG40H3PT4
+      icon: chat
+      
+spec:
+  type: library
+  owner: group:default/dataops
+  lifecycle: production
