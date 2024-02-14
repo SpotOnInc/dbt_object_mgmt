@@ -7,9 +7,9 @@ metadata:
     Macros of snowflake object management with dbt
   
   annotations:
+    spoton.com/domain: domain:default/infrastructure
     github.com/project-slug: spotoninc/dbt_object_mgmt
   
-    backstage.io/techdocs-ref: dir:..
   
   tags:
     - dbt # language
