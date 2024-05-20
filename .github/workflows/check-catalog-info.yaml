@@ -10,7 +10,7 @@ on:
 
 jobs:
   validate-catalog-info:
-    runs-on: [self-hosted, corp, medium, eks-runner]
+    runs-on: medium
     steps:
       - name: Checkout
         uses: actions/checkout@v3
