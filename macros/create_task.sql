@@ -10,7 +10,7 @@
 {% set task = gather_results(file) %}
 
 {# set the non-standard kay:values #}
-{% set task_name = task.pop('task_name', ) %}
+{% set task_name = task.pop('task_name') %}
 {% set sql_block = task.pop('sql', 'select 1') %}
 {% set after = task.pop('after', None) %}
 {% set when = task.pop('when', None) %}
