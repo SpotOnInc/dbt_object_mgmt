@@ -39,7 +39,7 @@
 
     {% set stage = get_stage_name() %}
 
-    create or replace stage {{ stage }};
+    create or replace temporary stage {{ stage }};
     {{ log('created stage: ' ~ stage, info=True) }}
 
     put file://{{ file }} @{{ stage }};
@@ -66,7 +66,7 @@
   {% endset %}
 
   {% set format_sql %}
-    create or replace file format {{ get_file_format() }}
+    create or replace temporary file format {{ get_file_format() }}
     {{ format_args }}
     ;
   {% endset %}
