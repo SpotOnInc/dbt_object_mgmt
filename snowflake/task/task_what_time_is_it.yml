@@ -1,6 +1,6 @@
 task_name: what_time_is_it
 schedule: "'USING CRON 7 * * * * UTC'"
-comment: "'insert the timstramp of execution into a table at seven minutes past the hour'"
+comment: "'insert the timestamp of execution into a table at seven minutes past the hour'"
 task_auto_retry_attempts: 1
 user_task_managed_initial_warehouse_size: xsmall # for serverless
 # warehouse: analytics_wh # for user managed
