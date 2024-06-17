@@ -87,6 +87,24 @@ This macro helps with the creation and alteration of [integrations](https://docs
 
 </details>
 
+___
+### [create_task](./macros/create_task.sql)
+
+This macro manages [tasks](https://docs.snowflake.com/en/sql-reference/sql/create-task) using create or alter syntax that takes a 1:1 file to integration approach. Only `task_name` and `sql` parameters are required - all others on documentation are optional. 
+<details>
+  <summary>command line and file parameters</summary>
+
+  ##### command line
+  ```bash
+  dbt run-operation create_task \
+    --args 'file: ./snowflake/task/task_what_time_is_it.yml'
+  ```
+  ##### file parameters
+  - **task_name**: name for the integration
+  - **sql**: sql commands run by task
+  - **enabled**: true ( default ) | false
+
+</details>
 
 ______
 ### [create_pipe](./macros/create_pipe.sql)
