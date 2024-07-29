@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?maxAge=2592000)](https://opensource.org/licenses/MIT)
+
 This dbt repo is setup to house macros of snowflake object management with dbt.
 Macros use a combination of snowflake put operations and stages to use local file data to create objects, with file paths set as environment variables. It contains the following macros, with example data formats in the [./snowflake](./snowflake/) folder.
 
