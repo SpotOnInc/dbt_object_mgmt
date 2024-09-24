@@ -17,7 +17,8 @@
 {%- set format_type_options = {
     'skip_header': 1,
     'null_if': ('', 'null'),
-    'error_on_column_count_mismatch': true
+    'error_on_column_count_mismatch': true,
+    'field_optionally_enclosed_by': '\'"\'', 
   }
   if file_type == 'CSV'
   else {}
@@ -28,11 +29,17 @@
 {% endif %}
 
 {% set copy_statement -%}
+copy into {{ schema_name }}.{{ table_name }} from
 {% if pipe.match_by_column_name %}
-copy into {{ schema_name }}.{{ table_name }}
-from @{{ schema_name }}.{{ table_name }}_stage
-{% else %}
-copy into {{ schema_name }}.{{ table_name }} from (
+  {# if match_by_column_name, reccomended to set this in the pipe definition
+    extra_format_options:
+      parse_header: true
+      skip_header: 0
+      error_on_column_count_mismatch: false
+  -#}
+  @{{ schema_name }}.{{ table_name }}_stage
+  {{ "match_by_column_name = " ~ pipe.match_by_column_name }}
+{% else %} (
     select
       {%- if file_type == 'JSON' %}
       parse_json($1)
@@ -89,10 +96,12 @@ create or replace table {{ schema_name }}.{{ table_name }} (
 {{ copy_statement }}
 ;
 
+{# 
 -- Create pipe
 create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = true as
 {{ copy_statement }}
 ;
+#}
 
 commit;
 {%- endset -%}
