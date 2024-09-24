@@ -96,12 +96,12 @@ create or replace table {{ schema_name }}.{{ table_name }} (
 {{ copy_statement }}
 ;
 
-{# 
+
 -- Create pipe
 create or replace pipe {{ schema_name }}.{{ table_name }}_pipe auto_ingest = true as
 {{ copy_statement }}
 ;
-#}
+
 
 commit;
 {%- endset -%}
