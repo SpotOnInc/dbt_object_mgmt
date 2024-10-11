@@ -39,6 +39,17 @@ copy into {{ schema_name }}.{{ table_name }} from
   -#}
   @{{ schema_name }}.{{ table_name }}_stage
   {{ "match_by_column_name = " ~ pipe.match_by_column_name }}
+
+  {% if pipe.match_by_column_name -%}
+    include_metadata = (
+      file_name = metadata$filename
+      file_id = metadata$file_content_key
+      row_number = metadata$file_row_number
+      last_modified_time = metadata$file_last_modified
+      load_time = metadata$start_scan_time
+    )
+  {%- endif %}
+
 {% else %} (
     select
       {%- if file_type == 'JSON' %}
