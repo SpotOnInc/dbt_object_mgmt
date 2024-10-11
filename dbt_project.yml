@@ -2,6 +2,8 @@ name: 'dbt_object_mgmt'
 version: '0.2.10'
 config-version: 2
 
+profile: 'dbt_object_mgmt'
+
 target-path: "target"
 macro-paths: ["macros"]
 log-path: "logs"
@@ -14,3 +16,4 @@ vars:
   snowflake_user_file: snowflake/users/users.yml
   snowflake_network_policy_file: snowflake/policy/network_policies.yml
   snowflake_admin: securityadmin
+  dry_run: true

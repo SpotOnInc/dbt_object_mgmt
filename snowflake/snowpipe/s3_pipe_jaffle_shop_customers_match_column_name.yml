@@ -1,0 +1,14 @@
+integration_name: jaffle_shop_integration
+schema_name: raw_jaffle_shop
+table_name: jaffle_shop_customers
+s3_url: 's3://jaffle_shop/customers/'
+file_type: 'CSV'
+match_by_column_name: case_insensitive
+extra_format_options:
+  parse_header: true
+  skip_header: 0
+  error_on_column_count_mismatch: false
+columns:
+  id: text
+  first_name: text
+  last_name: text
