@@ -28,6 +28,15 @@
   {{ format_type_options.update(pipe.extra_format_options) }}
 {% endif %}
 
+{% set metadata_columns = {
+      'file_name': 'metadata$filename',
+      'file_id': 'metadata$file_content_key',
+      'row_number': 'metadata$file_row_number',
+      'last_modified_time': 'metadata$file_last_modified',
+      'load_time': 'metadata$start_scan_time',
+  }
+%}
+
 {% set copy_statement -%}
 copy into {{ schema_name }}.{{ table_name }} from
 {% if pipe.match_by_column_name %}
@@ -39,6 +48,15 @@ copy into {{ schema_name }}.{{ table_name }} from
   -#}
   @{{ schema_name }}.{{ table_name }}_stage
   {{ "match_by_column_name = " ~ pipe.match_by_column_name }}
+
+  {% if pipe.match_by_column_name -%}
+    include_metadata = (
+      {% for key, value in metadata_columns.items() %}
+        {{- key }} = {{ value }}{{ ', ' if not loop.last }}
+      {% endfor %}
+    )
+  {%- endif %}
+
 {% else %} (
     select
       {%- if file_type == 'JSON' %}
@@ -48,11 +66,7 @@ copy into {{ schema_name }}.{{ table_name }} from
       {{ ', ' if not loop.first }}${{ loop.index }}
       {%- endfor %}
       {%- endif %}
-      , metadata$filename
-      , md5(metadata$filename)
-      , metadata$file_row_number
-      , metadata$file_last_modified
-      , metadata$start_scan_time
+      , {{ metadata_columns.values() | join(', ') -}}
     from
       @{{ schema_name }}.{{ table_name }}_stage
   )
@@ -63,8 +77,8 @@ copy into {{ schema_name }}.{{ table_name }} from
     type = '{{ file_type }}'
     {% for key, value in format_type_options.items() %}
       {{- key }} = {{ value }}
-    {% endfor -%}
-    )
+    {% endfor %}
+  )
 {% endset %}
 
 {%- set sql -%}
