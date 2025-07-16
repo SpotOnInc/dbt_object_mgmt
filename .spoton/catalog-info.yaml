@@ -29,5 +29,5 @@ metadata:
 
 spec:
   type: library
-  owner: group:default/dataops
+  owner: group:default/data-platform
   lifecycle: production
