@@ -1,0 +1,26 @@
+integration_name: jaffle_shop_integration
+schema_name: raw_jaffle_shop
+table_name: jaffle_shop_customers_custom
+s3_url: 's3://jaffle_shop/customers/'
+file_type: 'CSV'
+columns:
+  id: text
+  first_name: text
+  last_name: text
+# This allows you to override default metadata columns or add new ones
+custom_metadata_columns:
+  # Simple override column definition with a simple expression
+  file_id: md5(file_name)
+
+  # Add a new column with a custom source expression
+  file_path:
+    source: "'s3://jaffle-shop/customers/'"
+    type: text
+
+  # Override just the datatype
+  row_number:
+    type: smallint
+
+  # Modify just the definition of the default column
+  load_time:
+    source: current_timestamp
