@@ -84,7 +84,9 @@ copy into {{ schema_name }}.{{ table_name }} from
       {{ ', ' if not loop.first }}${{ loop.index }}
       {%- endfor %}
       {%- endif %}
-      , {{ metadata_columns.values() | join(', ') }}
+      {% for config in metadata_columns.values() -%}
+      , {{ config.get('source') }}
+      {%- endfor %}
     from
       @{{ schema_name }}.{{ table_name }}_stage
   )
