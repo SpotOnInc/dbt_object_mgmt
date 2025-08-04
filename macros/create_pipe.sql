@@ -29,13 +29,31 @@
 {% endif %}
 
 {% set metadata_columns = {
-      'file_name': 'metadata$filename',
-      'file_id': 'metadata$file_content_key',
-      'row_number': 'metadata$file_row_number',
-      'last_modified_time': 'metadata$file_last_modified',
-      'load_time': 'metadata$start_scan_time',
+      'file_name':          {'source':'metadata$filename',           'type':'text',},
+      'file_id':            {'source':'metadata$file_content_key',   'type':'text',},
+      'row_number':         {'source':'metadata$file_row_number',    'type':'integer',},
+      'last_modified_time': {'source':'metadata$file_last_modified', 'type':'timestamp_ntz',},
+      'load_time':          {'source':'metadata$start_scan_time',    'type':'timestamp_ltz',},
   }
 %}
+
+{# Update with custom metadata column overrides #}
+{% if pipe.custom_metadata_columns %}
+  {% for col_name, config in pipe.custom_metadata_columns.items() %}
+    {% if metadata_columns.get(col_name) %} {# If column already exists, update it #}
+      {% if config is mapping %} {# If config is a dict (column: {source: ..., type: ...}) #}
+          {% for key, value in config.items() %}
+            {% do metadata_columns[col_name].update({key: value}) %}
+          {% endfor %}
+      {% else %} {# If config is just a string (column: source) #}
+        {% do metadata_columns[col_name].update({'source': config}) %}
+      {% endif %}
+    {% else %} {# If column doesn't exist, add it #}
+      {% do metadata_columns.update({col_name: config}) %}  
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
 
 {% set copy_statement -%}
 copy into {{ schema_name }}.{{ table_name }} from
@@ -66,7 +84,9 @@ copy into {{ schema_name }}.{{ table_name }} from
       {{ ', ' if not loop.first }}${{ loop.index }}
       {%- endfor %}
       {%- endif %}
-      , {{ metadata_columns.values() | join(', ') }}
+      {% for config in metadata_columns.values() -%}
+      , {{ config.get('source') }}
+      {%- endfor %}
     from
       @{{ schema_name }}.{{ table_name }}_stage
   )
@@ -98,11 +118,9 @@ create or replace table {{ schema_name }}.{{ table_name }} (
   {%- for col, type in pipe.columns.items() %}
   {{ ', ' if not loop.first }}{{ col }} {{ type }}
   {%- endfor %}
-  , file_name text
-  , file_id text
-  , row_number integer
-  , last_modified_time timestamp_ntz
-  , load_time timestamp_ltz
+  {%- for col_name, col_data in metadata_columns.items() %}
+  , {{ col_name }} {{ col_data.get('type') }}
+  {%- endfor %}
   )
 ;
 
