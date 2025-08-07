@@ -7,7 +7,7 @@
   ) }}
 {% endif %}
 
-{% set integration = gather_results(file) %}
+{% set integration = dbt_object_mgmt.gather_results(file) %}
 
 {% set integration_name = integration.pop('integration_name') %}
 {% set integration_type = integration.pop('integration_type') %}
