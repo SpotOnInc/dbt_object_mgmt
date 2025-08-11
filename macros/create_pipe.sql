@@ -7,7 +7,7 @@
   ) }}
 {% endif %}
 
-{% set pipe = gather_results(file) %}
+{% set pipe = dbt_object_mgmt.gather_results(file) %}
 {%- set database_name = pipe.database_name or target.database %}
 {%- set schema_name = database_name ~ '.' ~ pipe.schema_name %}
 {%- set table_name = pipe.table_name %}

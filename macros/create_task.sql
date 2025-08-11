@@ -7,7 +7,7 @@
   ) }}
 {% endif %}
 
-{% set task = gather_results(file) %}
+{% set task = dbt_object_mgmt.gather_results(file) %}
 
 {# set the non-standard kay:values #}
 {% set task_name = task.pop('task_name') %}

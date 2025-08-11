@@ -4,7 +4,7 @@
 {%- set _password = var('password', 's0up3rs$cr3t') %}
 {% set must_quote_columns = ['email', 'comment', 'rsa_public_key', 'display_name', 'first_name', 'last_name', 'middle_name'] %}
 
-{% set user_list = gather_results(file) %}
+{% set user_list = dbt_object_mgmt.gather_results(file) %}
 
 
 {%- set user_sql -%}

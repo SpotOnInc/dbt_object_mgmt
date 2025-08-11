@@ -4,12 +4,12 @@
 
 
 {% macro get_stage_name() %}
-  {{ return(get_qual_schema() ~ '.stage') }}
+  {{ return(dbt_object_mgmt.get_qual_schema() ~ '.stage') }}
 {% endmacro %}
 
 
 {% macro get_file_format() %}
-  {{ return(get_qual_schema() ~ '.file_format') }}
+  {{ return(dbt_object_mgmt.get_qual_schema() ~ '.file_format') }}
 {% endmacro %}
 
 
@@ -20,7 +20,7 @@
 
 {% macro validate_filetype(file) %}
   {% set accepted_types = ['yml', 'yaml', 'json'] %}
-  {% set file_type = get_file_type(file) %}
+  {% set file_type = dbt_object_mgmt.get_file_type(file) %}
 
   {% if file_type not in accepted_types %}
     {% do exceptions.raise_compiler_error(
@@ -33,11 +33,11 @@
 
 {% macro put_file(file) %}
 
-  {{ validate_filetype(file) }}
+  {{ dbt_object_mgmt.validate_filetype(file) }}
 
   {% set put_sql %}
 
-    {% set stage = get_stage_name() %}
+    {% set stage = dbt_object_mgmt.get_stage_name() %}
 
     create or replace temporary stage {{ stage }};
     {{ log('created stage: ' ~ stage, info=True) }}
@@ -54,7 +54,7 @@
 
 {% macro create_file_format(file) %}
 
-  {% set file_type = get_file_type(file) %}
+  {% set file_type = dbt_object_mgmt.get_file_type(file) %}
 
   {% set format_args %}
     {% if file_type == 'json' %}
@@ -66,7 +66,7 @@
   {% endset %}
 
   {% set format_sql %}
-    create or replace temporary file format {{ get_file_format() }}
+    create or replace temporary file format {{ dbt_object_mgmt.get_file_format() }}
     {{ format_args }}
     ;
   {% endset %}
@@ -82,15 +82,15 @@
 
 {% macro gather_results(file) %}
 
-  {{ put_file(file) }}
+  {{ dbt_object_mgmt.put_file(file) }}
 
-  {% set file_parser = create_file_format(file) %}
+  {% set file_parser = dbt_object_mgmt.create_file_format(file) %}
 
   {% set data_sql %}
     select
       $1 as raw_data
-    from @{{ get_stage_name() }} (
-      file_format => {{ get_file_format() }}
+    from @{{ dbt_object_mgmt.get_stage_name() }} (
+      file_format => {{ dbt_object_mgmt.get_file_format() }}
     )
     ;
   {% endset %}

@@ -2,7 +2,7 @@
 
 {% set file = var('snowflake_network_policy_file' , 'snowflake/whitelist/network_policies.yml') %}
 
-{% set policy_list = gather_results(file) %}
+{% set policy_list = dbt_object_mgmt.gather_results(file) %}
 
 
 {% set network_policy_sql %}
