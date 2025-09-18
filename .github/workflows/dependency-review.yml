@@ -1,0 +1,17 @@
+name: Dependency Review
+on:
+  - pull_request
+permissions:
+  contents: read
+  pull-requests: write
+jobs:
+  dependency-review:
+    runs-on: medium
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v3
+        with:
+          config-file: spotoninc/copier-github-security-workflow/dependency-review-config.yml@main  # Centralized config for all repositories maintained by InfoSec
+          external-repo-token: ${{ secrets.ADMIN_GITHUB_TOKEN }} # Used to access external config file
