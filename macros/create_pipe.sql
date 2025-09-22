@@ -70,7 +70,7 @@ copy into {{ schema_name }}.{{ table_name }} from
   {% if pipe.match_by_column_name -%}
     include_metadata = (
       {% for key, value in metadata_columns.items() %}
-        {{- key }} = {{ value }}{{ ', ' if not loop.last }}
+        {{- key }} = {{ value.get('source') }}{{ ', ' if not loop.last }}
       {% endfor %}
     )
   {%- endif %}
