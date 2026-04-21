@@ -1,11 +1,6 @@
 {%- macro create_integration(file) -%}
 
-{% if not file %}
-  {{ exceptions.raise_compiler_error(
-    "\nyou must pass in a file via arguments:" ~
-    "\n  --args 'file: ./snowflake/integration/s3_to_snowflake_integration.yml'"
-  ) }}
-{% endif %}
+{{ dbt_object_mgmt._require_file(file, './snowflake/integration/s3_to_snowflake_integration.yml') }}
 
 {% set integration = dbt_object_mgmt.gather_results(file) %}
 
@@ -47,9 +42,6 @@ alter {{ integration_type }} integration {{ integration_name }} set
 commit;
 {%- endset -%}
 
-{{ log(sql, info=True) }}
-{% if not var('dry_run', False) %}
-  {{ run_query(sql) }}
-{% endif %}
+{{ dbt_object_mgmt._execute(sql) }}
 
 {%- endmacro -%}
