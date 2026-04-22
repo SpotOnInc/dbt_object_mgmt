@@ -1,0 +1,52 @@
+- name: DBT_CI_ROLE
+  comment: 'Role for GitHub Actions dbt CI runs — read all prod sources, write to DEV_ANALYTICS_PROD only'
+  parent_roles:
+    - SYSADMIN
+  grants:
+
+    - privilege: USAGE
+      objects:
+        - type: WAREHOUSE
+          names: [COMPUTE_WH]
+        - type: DATABASE
+          names: [ANALYTICS, ANALYTICS_STAGING, RAW_PROD, RAW_STAGING, MAESTRO_DB]
+        - type: ALL SCHEMAS
+          in: [DATABASE ANALYTICS, DATABASE ANALYTICS_STAGING, DATABASE RAW_PROD, DATABASE RAW_STAGING, DATABASE MAESTRO_DB]
+        - type: FUTURE SCHEMAS
+          in: [DATABASE ANALYTICS, DATABASE ANALYTICS_STAGING, DATABASE RAW_PROD, DATABASE RAW_STAGING, DATABASE MAESTRO_DB]
+
+    # IMPORTED PRIVILEGES replaces individual USAGE/SELECT grants on shared/reader DBs
+    - privilege: IMPORTED PRIVILEGES
+      objects:
+        - type: DATABASE
+          names: [HEAP_PRODUCTION, GONG, SEISMIC_PRODUCTION]
+
+    - privilege: SELECT
+      objects:
+        - type: ALL TABLES
+          in: [DATABASE ANALYTICS, DATABASE ANALYTICS_STAGING, DATABASE RAW_PROD, DATABASE RAW_STAGING, DATABASE MAESTRO_DB]
+        - type: ALL VIEWS
+          in: [DATABASE ANALYTICS, DATABASE ANALYTICS_STAGING, DATABASE RAW_PROD, DATABASE RAW_STAGING, DATABASE MAESTRO_DB]
+        - type: ALL DYNAMIC TABLES
+          in: [DATABASE RAW_PROD]
+        - type: FUTURE TABLES
+          in: [DATABASE ANALYTICS, DATABASE ANALYTICS_STAGING, DATABASE RAW_PROD, DATABASE RAW_STAGING, DATABASE MAESTRO_DB]
+        - type: FUTURE VIEWS
+          in: [DATABASE ANALYTICS, DATABASE ANALYTICS_STAGING, DATABASE RAW_PROD, DATABASE RAW_STAGING]
+        - type: FUTURE DYNAMIC TABLES
+          in: [DATABASE RAW_PROD]
+
+    - privilege: ALL PRIVILEGES
+      objects:
+        - type: DATABASE
+          names: [DEV_ANALYTICS_PROD]
+        - type: ALL SCHEMAS
+          in: [DATABASE DEV_ANALYTICS_PROD]
+        - type: ALL TABLES
+          in: [DATABASE DEV_ANALYTICS_PROD]
+        - type: FUTURE SCHEMAS
+          in: [DATABASE DEV_ANALYTICS_PROD]
+        - type: FUTURE TABLES
+          in: [DATABASE DEV_ANALYTICS_PROD]
+        - type: FUTURE VIEWS
+          in: [DATABASE DEV_ANALYTICS_PROD]

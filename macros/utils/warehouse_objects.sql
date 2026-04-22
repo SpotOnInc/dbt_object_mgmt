@@ -61,7 +61,8 @@
       type = 'JSON'
     {% else %}
       type = 'CSV'
-      record_delimiter = '||'
+      record_delimiter = None
+      field_delimiter = None
     {% endif %}
   {% endset %}
 
