@@ -17,12 +17,12 @@ use role {{ var('snowflake_admin', 'SECURITYADMIN') }};
   {%- set parent_roles = role.get('parent_roles', []) %}
   {%- set grants       = role.get('grants', []) %}
 
-  create role if not exists {{ role_name }}
-  {%- if comment %}
-    comment = '{{ comment | trim }}'
-  {%- endif %}
-  ;
+  create role if not exists {{ role_name }};
 
+  {%- if comment %}
+  alter role {{ role_name }} set comment = '{{ comment | trim }}';
+  {%- endif %}
+  
   {% for parent_role in parent_roles -%}
   grant role {{ role_name }} to role {{ parent_role | upper }};
   {% endfor -%}
