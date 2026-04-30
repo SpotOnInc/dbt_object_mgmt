@@ -34,19 +34,20 @@ use role {{ var('snowflake_admin', 'SECURITYADMIN') }};
   {% for obj in objects -%}
   {%- set object_type = obj.get('type') | upper %}
   {%- set names       = obj.get('names', []) %}
+  {%- set names       = ([names] if names is string else names) %}
   {%- set in_scopes   = obj.get('in', []) %}
   {%- set in_scopes   = ([in_scopes] if in_scopes is string else in_scopes) %}
 
   {%- if object_type == 'ACCOUNT' %}
     grant {{ privilege }} on account to role {{ role_name }};
   {%- elif in_scopes %}
-  {% for scope in in_scopes -%}
-    grant {{ privilege }} on {{ object_type }} in {{ scope | upper }} to role {{ role_name }};
-  {% endfor -%}
+    {% for scope in in_scopes -%}
+      grant {{ privilege }} on {{ object_type }} in {{ scope | upper }} to role {{ role_name }};
+    {% endfor -%}
   {%- else %}
-  {% for name in names -%}
-    grant {{ privilege }} on {{ object_type }} {{ name | upper }} to role {{ role_name }};
-  {% endfor -%}
+    {% for name in names -%}
+      grant {{ privilege }} on {{ object_type }} {{ name | upper }} to role {{ role_name }};
+    {% endfor -%}
   {%- endif %}
   {% endfor -%}
   {% endfor %}
