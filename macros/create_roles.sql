@@ -20,36 +20,35 @@ use role {{ var('snowflake_admin', 'SECURITYADMIN') }};
   create role if not exists {{ role_name }};
 
   {%- if comment %}
-  alter role {{ role_name }} set comment = '{{ comment | trim }}';
+    alter role {{ role_name }} set comment = '{{ comment | trim }}';
   {%- endif %}
   
   {% for parent_role in parent_roles -%}
-  grant role {{ role_name }} to role {{ parent_role | upper }};
+    grant role {{ role_name }} to role {{ parent_role | upper }};
   {% endfor -%}
 
   {% for grant in grants -%}
-  {%- set privilege = grant.get('privilege') | upper %}
-  {%- set objects   = grant.get('objects', []) %}
+    {%- set privilege = grant.get('privilege') | upper %}
+    {%- set objects   = grant.get('objects', []) %}
 
-  {% for obj in objects -%}
-  {%- set object_type = obj.get('type') | upper %}
-  {%- set names       = obj.get('names', []) %}
-  {%- set names       = ([names] if names is string else names) %}
-  {%- set in_scopes   = obj.get('in', []) %}
-  {%- set in_scopes   = ([in_scopes] if in_scopes is string else in_scopes) %}
+    {% for obj in objects -%}
+      {%- set object_type = obj.get('type') | upper %}
+      {%- set names       = obj.get('names', []) %}
+      {%- set in_scopes   = obj.get('in', []) %}
+      {%- set in_scopes   = ([in_scopes] if in_scopes is string else in_scopes) %}
 
-  {%- if object_type == 'ACCOUNT' %}
-    grant {{ privilege }} on account to role {{ role_name }};
-  {%- elif in_scopes %}
-    {% for scope in in_scopes -%}
-      grant {{ privilege }} on {{ object_type }} in {{ scope | upper }} to role {{ role_name }};
+      {%- if object_type == 'ACCOUNT' %}
+        grant {{ privilege }} on account to role {{ role_name }};
+      {%- elif in_scopes %}
+        {% for scope in in_scopes -%}
+          grant {{ privilege }} on {{ object_type }} in {{ scope | upper }} to role {{ role_name }};
+        {% endfor -%}
+      {%- else %}
+        {% for name in names -%}
+          grant {{ privilege }} on {{ object_type }} {{ name | upper }} to role {{ role_name }};
+        {% endfor -%}
+      {%- endif %}
     {% endfor -%}
-  {%- else %}
-    {% for name in names -%}
-      grant {{ privilege }} on {{ object_type }} {{ name | upper }} to role {{ role_name }};
-    {% endfor -%}
-  {%- endif %}
-  {% endfor -%}
   {% endfor %}
 {%- endfor %}
 
