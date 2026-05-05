@@ -56,10 +56,28 @@ file_format = (
 {% endmacro %}
 
 
-{% macro _build_copy_statement(pipe, schema_name, metadata_columns, format_options) %}
+{% macro _build_format_options(file_type, extra_format_options=none) %}
+  {%- set format_options = {
+      'skip_header': 1,
+      'null_if': ('', 'null'),
+      'error_on_column_count_mismatch': true,
+      'field_optionally_enclosed_by': "'\"'"
+    }
+    if file_type == 'CSV'
+    else {}
+  -%}
+  {%- if extra_format_options -%}
+    {%- do format_options.update(extra_format_options) -%}
+  {%- endif -%}
+  {{ return(format_options) }}
+{% endmacro %}
+
+
+{% macro _build_copy_statement(pipe, schema_name, metadata_columns, format_options, target_table=none, raw_pattern=none) %}
 {%- set table_name = pipe.table_name -%}
 {%- set stage = schema_name ~ '.' ~ table_name ~ '_stage' -%}
-copy into {{ schema_name }}.{{ table_name }} from
+{%- set dest = target_table if target_table is not none else schema_name ~ '.' ~ table_name -%}
+copy into {{ dest }} from
 {% if pipe.match_by_column_name %}
   {# if match_by_column_name, recommended to set in the pipe definition:
     extra_format_options:
@@ -82,6 +100,10 @@ copy into {{ schema_name }}.{{ table_name }} from
   {{ dbt_object_mgmt._build_copy_select(pipe.columns, pipe.file_type, metadata_columns, stage) }}
 {% endif %}
   on_error = continue
-  {{ "pattern = '" ~ pipe.pattern ~ "'" if pipe.pattern }}
+  {%- if raw_pattern is not none %}
+  pattern = {{ raw_pattern }}
+  {%- elif pipe.pattern %}
+  {{ "pattern = '" ~ pipe.pattern ~ "'" }}
+  {%- endif %}
   {{ dbt_object_mgmt._build_file_format(pipe.file_type, format_options) }}
 {% endmacro %}

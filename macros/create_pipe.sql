@@ -8,18 +8,7 @@
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
 
-{%- set format_options = {
-    'skip_header': 1,
-    'null_if': ('', 'null'),
-    'error_on_column_count_mismatch': true,
-    'field_optionally_enclosed_by': '\'"\''
-  }
-  if file_type == 'CSV'
-  else {}
-%}
-{% if pipe.extra_format_options %}
-  {{ format_options.update(pipe.extra_format_options) }}
-{% endif %}
+{%- set format_options = dbt_object_mgmt._build_format_options(file_type, pipe.extra_format_options) -%}
 
 {%- set metadata_columns = dbt_object_mgmt._resolve_metadata_columns(pipe.custom_metadata_columns) -%}
 

@@ -9,32 +9,12 @@
 {%- set table_name = pipe.table_name %}
 {%- set file_type = pipe.file_type %}
 
-{%- set format_options = {
-    'skip_header': 1,
-    'null_if': ('', 'null'),
-    'error_on_column_count_mismatch': true,
-    'field_optionally_enclosed_by': '\'"\''
-  }
-  if file_type == 'CSV'
-  else {}
-%}
-{% if pipe.extra_format_options %}
-  {{ format_options.update(pipe.extra_format_options) }}
-{% endif %}
+{%- set format_options = dbt_object_mgmt._build_format_options(file_type, pipe.extra_format_options) -%}
 
 {%- set metadata_columns = dbt_object_mgmt._resolve_metadata_columns(pipe.custom_metadata_columns) -%}
 
 {% set copy_statement -%}
-copy into {{ schema_name }}.{{ table_name }}_temp
-{% if pipe.match_by_column_name %}
-  from @{{ schema_name }}.{{ table_name }}_stage
-  {{ "match_by_column_name = " ~ pipe.match_by_column_name }}
-{% else %}
-  from {{ dbt_object_mgmt._build_copy_select(pipe.columns, file_type, metadata_columns, stage) }}
-{% endif %}
-  on_error = continue
-  pattern = $file_name
-  {{ dbt_object_mgmt._build_file_format(file_type, format_options) }}
+  {{ dbt_object_mgmt._build_copy_statement(pipe, schema_name, metadata_columns, format_options, target_table=schema_name~'.'~table_name~'_temp', raw_pattern='$file_name') }}
 {%- endset %}
 
 
@@ -42,7 +22,7 @@ copy into {{ schema_name }}.{{ table_name }}_temp
 
 -- Drop the file needing to be reloaded
 delete from {{ schema_name }}.{{ table_name }}
-  where file_name ilike $file_name
+  where file_name = '{{ file_name }}'
 ;
 
 -- Create a temp table to load data
