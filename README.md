@@ -108,6 +108,36 @@ This macro manages [tasks](https://docs.snowflake.com/en/sql-reference/sql/creat
 
 </details>
 
+___
+### [create_mcp_server](./macros/create_mcp_server.sql)
+
+This macro manages Snowflake [MCP (Model Context Protocol) servers](https://docs.snowflake.com/en/sql-reference/sql/create-mcp-server) using `CREATE OR REPLACE` syntax, taking a 1:1 file to MCP server approach. The server name is automatically qualified to `database.schema.name` using the target profile values when a partial name is provided.
+<details>
+  <summary>command line and file parameters</summary>
+
+  ##### command line
+  ```bash
+  dbt run-operation create_mcp_server \
+    --args 'file: ./snowflake/mcp_server/my_mcp_server.yml'
+  ```
+
+  ##### file parameters
+  - **server_name**: identifier for the MCP server. Supports partial qualification — a bare name gets `target.database.target.schema` prepended, a `schema.name` gets `target.database` prepended, and a fully qualified `database.schema.name` is used as-is.
+  - **tools**: list of tool definitions. Each tool supports:
+    - **name** *(required)*: unique name for the tool within the server
+    - **type** *(required)*: one of `CORTEX_SEARCH_SERVICE_QUERY`, `CORTEX_ANALYST_MESSAGE`, `CORTEX_AGENT_RUN`, `SYSTEM_EXECUTE_SQL`, or `GENERIC`
+    - **title**: display name for the tool
+    - **description**: description of what the tool does
+    - **identifier**: fully qualified reference to the backing Snowflake object (required for all types except `SYSTEM_EXECUTE_SQL`)
+    - **config** *(GENERIC only)*:
+      - **type**: `function` or `procedure`
+      - **warehouse**: warehouse to use for execution
+      - **input_schema**: JSON Schema object defining tool inputs, with `type` and `properties` (each property has `description` and `type`)
+
+  See the [example config](./snowflake/mcp_server/example_mcp_server.yml) for all four tool types.
+
+</details>
+
 ______
 ### [create_pipe](./macros/create_pipe.sql)
 
