@@ -24,37 +24,37 @@
 {%- set spec_lines = [] %}
 {%- do spec_lines.append('tools:') %}
 {%- for tool in tools %}
-  {%- do spec_lines.append('- name: "' ~ tool.name ~ '"') %}
-  {%- do spec_lines.append('  type: "' ~ tool.type ~ '"') %}
+  {%- do spec_lines.append('  - name: "' ~ tool.name ~ '"') %}
+  {%- do spec_lines.append('    type: "' ~ tool.type ~ '"') %}
   {%- if tool.title %}
-    {%- do spec_lines.append('  title: "' ~ tool.title ~ '"') %}
+    {%- do spec_lines.append('    title: "' ~ tool.title ~ '"') %}
   {%- endif %}
   {%- if tool.description %}
-    {%- do spec_lines.append('  description: "' ~ tool.description ~ '"') %}
+    {%- do spec_lines.append('    description: "' ~ tool.description ~ '"') %}
   {%- endif %}
   {%- if tool.identifier %}
-    {%- do spec_lines.append('  identifier: "' ~ tool.identifier ~ '"') %}
+    {%- do spec_lines.append('    identifier: "' ~ tool.identifier ~ '"') %}
   {%- endif %}
   {%- if tool.config %}
     {%- set tool_config = tool.config %}
-    {%- do spec_lines.append('  config:') %}
-    {%- do spec_lines.append('    type: "' ~ tool_config.type ~ '"') %}
+    {%- do spec_lines.append('    config:') %}
+    {%- do spec_lines.append('      type: "' ~ tool_config.type ~ '"') %}
     {%- if tool_config.warehouse %}
-      {%- do spec_lines.append('    warehouse: "' ~ tool_config.warehouse ~ '"') %}
+      {%- do spec_lines.append('      warehouse: "' ~ tool_config.warehouse ~ '"') %}
     {%- endif %}
     {%- if tool_config.input_schema %}
       {%- set input_schema = tool_config.input_schema %}
-      {%- do spec_lines.append('    input_schema:') %}
-      {%- do spec_lines.append('      type: "' ~ input_schema.type ~ '"') %}
+      {%- do spec_lines.append('      input_schema:') %}
+      {%- do spec_lines.append('        type: "' ~ input_schema.type ~ '"') %}
       {%- if input_schema.properties %}
-        {%- do spec_lines.append('      properties:') %}
+        {%- do spec_lines.append('        properties:') %}
         {%- for prop_name, prop in input_schema.properties.items() %}
-          {%- do spec_lines.append('        ' ~ prop_name ~ ':') %}
+          {%- do spec_lines.append('          ' ~ prop_name ~ ':') %}
           {%- if prop.description %}
-            {%- do spec_lines.append('          description: "' ~ prop.description ~ '"') %}
+            {%- do spec_lines.append('            description: "' ~ prop.description ~ '"') %}
           {%- endif %}
           {%- if prop.type %}
-            {%- do spec_lines.append('          type: "' ~ prop.type ~ '"') %}
+            {%- do spec_lines.append('            type: "' ~ prop.type ~ '"') %}
           {%- endif %}
         {%- endfor %}
       {%- endif %}
