@@ -31,7 +31,7 @@
 {% set metadata_columns = {
       'file_name':          {'source':'metadata$filename',           'type':'text',},
       'file_id':            {'source':'metadata$file_content_key',   'type':'text',},
-      'row_number':         {'source':'metadata$file_row_number',    'type':'integer',},
+      'file_row_number':    {'source':'metadata$file_row_number',    'type':'integer',},
       'last_modified_time': {'source':'metadata$file_last_modified', 'type':'timestamp_ntz',},
       'load_time':          {'source':'metadata$start_scan_time',    'type':'timestamp_ltz',},
   }
