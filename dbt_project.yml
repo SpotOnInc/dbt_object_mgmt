@@ -15,5 +15,6 @@ clean-targets:
 vars:
   snowflake_user_file: snowflake/users/users.yml
   snowflake_network_policy_file: snowflake/policy/network_policies.yml
+  snowflake_role_file: snowflake/roles/roles.yml
   snowflake_admin: securityadmin
   dry_run: true

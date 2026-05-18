@@ -1,0 +1,52 @@
+- name: DBT_CI_ROLE
+  comment: 'Role for CI/CD dbt runs — read all prod sources, write to dev database only'
+  parent_roles:
+    - SYSADMIN
+  grants:
+
+    - privilege: USAGE
+      objects:
+        - type: WAREHOUSE
+          names: [COMPUTE_WH]
+        - type: DATABASE
+          names: [ANALYTICS_DB, RAW_DB]
+        - type: ALL SCHEMAS
+          in: [DATABASE ANALYTICS_DB, DATABASE RAW_DB]
+        - type: FUTURE SCHEMAS
+          in: [DATABASE ANALYTICS_DB, DATABASE RAW_DB]
+
+    # IMPORTED PRIVILEGES replaces individual USAGE/SELECT grants on shared/reader DBs
+    - privilege: IMPORTED PRIVILEGES
+      objects:
+        - type: DATABASE
+          names: [VENDOR_PRODUCT_A]
+
+    - privilege: SELECT
+      objects:
+        - type: ALL TABLES
+          in: [DATABASE ANALYTICS_DB, DATABASE RAW_DB]
+        - type: ALL VIEWS
+          in: [DATABASE ANALYTICS_DB, DATABASE RAW_DB]
+        - type: ALL DYNAMIC TABLES
+          in: [DATABASE ANALYTICS_DB]
+        - type: FUTURE TABLES
+          in: [DATABASE ANALYTICS_DB, DATABASE RAW_DB]
+        - type: FUTURE VIEWS
+          in: [DATABASE ANALYTICS_DB, DATABASE RAW_DB]
+        - type: FUTURE DYNAMIC TABLES
+          in: [DATABASE ANALYTICS_DB]
+
+    - privilege: ALL PRIVILEGES
+      objects:
+        - type: DATABASE
+          names: [DEV_DB]
+        - type: ALL SCHEMAS
+          in: [DATABASE DEV_DB]
+        - type: ALL TABLES
+          in: [DATABASE DEV_DB]
+        - type: FUTURE SCHEMAS
+          in: [DATABASE DEV_DB]
+        - type: FUTURE TABLES
+          in: [DATABASE DEV_DB]
+        - type: FUTURE VIEWS
+          in: [DATABASE DEV_DB]
