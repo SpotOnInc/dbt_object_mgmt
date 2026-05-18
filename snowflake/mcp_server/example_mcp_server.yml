@@ -1,0 +1,33 @@
+server_name: analytics.dev_dcorley.my_mcp_server
+tools:
+  - name: product-search
+    type: CORTEX_SEARCH_SERVICE_QUERY
+    title: Product Search
+    identifier: database1.schema1.cortex_search_service1
+    description: Cortex search service for all products
+
+  - name: revenue-analyst
+    type: CORTEX_ANALYST_MESSAGE
+    title: Revenue Analyst
+    identifier: database1.schema1.revenue_semantic_view
+    description: Semantic view for all revenue tables
+
+  - name: sql-exec
+    type: SYSTEM_EXECUTE_SQL
+    title: SQL Execution Tool
+    description: A tool to execute SQL queries against the connected Snowflake database.
+
+  - name: multiply-by-ten
+    type: GENERIC
+    title: Multiply by Ten
+    identifier: example_database.agents.multiply_by_ten
+    description: Multiplies input value by ten and returns the result.
+    config:
+      type: function
+      warehouse: compute_service_warehouse
+      input_schema:
+        type: object
+        properties:
+          x:
+            description: A number to be multiplied by ten
+            type: number
