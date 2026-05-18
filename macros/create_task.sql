@@ -1,11 +1,6 @@
 {% macro create_task(file) %}
 
-{% if not file %}
-  {{ exceptions.raise_compiler_error(
-    "\nyou must pass in a file via arguments:" ~
-    "\n  --args 'file: ./snowflake/snowpipe/s3_pipe_jaffle_shop_customers.yml'"
-  ) }}
-{% endif %}
+{{ dbt_object_mgmt._require_file(file, './snowflake/snowpipe/s3_pipe_jaffle_shop_customers.yml') }}
 
 {% set task = dbt_object_mgmt.gather_results(file) %}
 
