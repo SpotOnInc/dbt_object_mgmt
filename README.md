@@ -90,6 +90,31 @@ This macro helps with the creation and alteration of [integrations](https://docs
 </details>
 
 ___
+### [create_email_integration](./macros/create_email_integration.sql)
+
+This macro helps with the creation and management of Snowflake [email notification integrations](https://docs.snowflake.com/en/sql-reference/sql/create-notification-integration-email) (`TYPE = EMAIL`) from a YAML config, taking a 1:1 file to integration approach. It is idempotent and non-destructive: it runs `CREATE NOTIFICATION INTEGRATION IF NOT EXISTS` followed by an `ALTER ... SET`, so re-running keeps an existing integration in sync with the config without dropping it. Invalid configs (missing `integration_name`, a non-boolean `enabled`, recipient params that are not lists, or unsupported keys) fail with a clear compiler error.
+<details>
+  <summary>command line and file parameters</summary>
+
+  ##### command line
+  ```bash
+  dbt run-operation create_email_integration \
+    --args 'file: ./snowflake/integration/example_email_integration.yml'
+  ```
+
+  ##### file parameters
+  - **integration_name** *(required)*: name for the email notification integration
+  - **enabled**: `true` (default) | `false`
+  - **allowed_recipients**: optional list of verified account email addresses allowed to receive notifications (max 50)
+  - **default_recipients**: optional list of recipients used when a send call omits an explicit recipient list
+  - **default_subject**: optional default subject line (max 256 characters); quoting is handled by the macro
+  - **comment**: optional description for the integration
+
+  See the [example config](./snowflake/integration/example_email_integration.yml).
+
+</details>
+
+___
 ### [create_task](./macros/create_task.sql)
 
 This macro manages [tasks](https://docs.snowflake.com/en/sql-reference/sql/create-task) using create or alter syntax that takes a 1:1 file to integration approach. Only `task_name` and `sql` parameters are required - all others on documentation are optional. 

@@ -1,0 +1,21 @@
+# Example config for the create_email_integration macro.
+# Creates a Snowflake email notification integration (TYPE = EMAIL).
+# https://docs.snowflake.com/en/sql-reference/sql/create-notification-integration-email
+
+integration_name: my_email_integration  # required
+enabled: true                            # optional, defaults to true
+
+# optional: verified account email addresses allowed to receive notifications
+allowed_recipients:
+  - first.last@example.com
+  - alerts@example.com
+
+# optional: recipients used when a send call omits an explicit recipient list
+default_recipients:
+  - alerts@example.com
+
+# optional: default subject line (max 256 chars); quotes are handled by the macro
+default_subject: Snowflake Email Notification
+
+# optional: free-text description of the integration
+comment: email integration managed by dbt_object_mgmt
